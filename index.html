@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau Pie Chart Extension</title>
+    <!-- Tableau Extensions API -->
+    <script src="https://cdn.jsdelivr.net/gh/tableau/extensions-api/lib/tableau.extensions.1.latest.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <a id="header-link" href="#" target="_blank" style="text-decoration: none;">
+            <div class="header">
+                <img id="header-image" src="" alt="Header Icon" style="display: none; width: 24px; height: 24px; margin-right: 8px; vertical-align: middle;">
+                <span id="header-text">Ample Prive</span>
+            </div>
+        </a>
+        <div class="content">
+            <div class="summary">
+                <h1 id="total-value">49,620</h1>
+                <p id="total-label">Total enrollments</p>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+
+            <!-- Custom Legend Container -->
+            <div id="chart-legend" class="legend-container"></div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

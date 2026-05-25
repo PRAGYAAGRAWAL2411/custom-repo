@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extension Settings</title>
+    <script src="https://cdn.jsdelivr.net/gh/tableau/extensions-api/lib/tableau.extensions.1.latest.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], select { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { padding: 10px 15px; background-color: #3B548B; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        button:hover { background-color: #2a3c66; }
+    </style>
+</head>
+<body>
+    <h2>Configure Pie Chart</h2>
+    
+    <div class="form-group">
+        <label for="headerText">Custom Header Text</label>
+        <input type="text" id="headerText" placeholder="e.g. Ample Prive">
+    </div>
+
+    <div class="form-group">
+        <label for="targetUrl">URL (opens when clicking header)</label>
+        <input type="text" id="targetUrl" placeholder="https://...">
+    </div>
+
+    <div class="form-group">
+        <label for="imageUrl">Header Image URL (optional)</label>
+        <input type="text" id="imageUrl" placeholder="https://...">
+    </div>
+
+    <hr>
+    
+    <div class="form-group">
+        <label for="worksheetSelect">Select Worksheet</label>
+        <select id="worksheetSelect">
+            <option value="">-- Select Worksheet --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="dimensionSelect">Dimension (Labels)</label>
+        <select id="dimensionSelect">
+            <option value="">-- Select Dimension --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="measureSelect">Measure (Values)</label>
+        <select id="measureSelect">
+            <option value="">-- Select Measure --</option>
+        </select>
+    </div>
+
+    <button id="saveButton">Save Settings</button>
+
+    <script src="dialog.js"></script>
+</body>
+</html>
