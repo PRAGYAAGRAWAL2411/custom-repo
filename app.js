@@ -12,6 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
             updateExtensionState();
         });
 
+        // Listen for data changes in the worksheet
+        const worksheet = tableau.extensions.worksheetContent.worksheet;
+        if (worksheet) {
+            worksheet.addEventListener(tableau.TableauEventType.SummaryDataChanged, (event) => {
+                updateExtensionState();
+            });
+        }
+
         // Initial render
         updateExtensionState();
     });
@@ -25,7 +33,6 @@ function configure() {
         // The dialog was closed
         updateExtensionState();
     }).catch((error) => {
-        // One possible error is that the user closed the dialog
         switch (error.errorCode) {
             case tableau.ErrorCodes.DialogClosedByUser:
                 console.log("Dialog was closed by user");
@@ -60,33 +67,29 @@ function updateExtensionState() {
         headerLink.style.pointerEvents = 'auto';
     } else {
         headerLink.href = '#';
-        headerLink.style.pointerEvents = 'none'; // Disable link if no URL
+        headerLink.style.pointerEvents = 'none'; 
     }
 
-    // Fetch data if worksheet is configured
-    if (settings.selectedWorksheet && settings.selectedDimension && settings.selectedMeasure) {
-        fetchDataAndRenderChart(settings.selectedWorksheet, settings.selectedDimension, settings.selectedMeasure);
+    // Fetch data if dimension and measure are configured
+    if (settings.selectedDimension && settings.selectedMeasure) {
+        fetchDataAndRenderChart(settings.selectedDimension, settings.selectedMeasure);
     } else {
         // Render dummy data if not configured
         renderDummyData();
     }
 }
 
-function fetchDataAndRenderChart(worksheetName, dimensionName, measureName) {
-    const worksheets = tableau.extensions.dashboardContent.dashboard.worksheets;
-    const worksheet = worksheets.find(w => w.name === worksheetName);
+function fetchDataAndRenderChart(dimensionName, measureName) {
+    const worksheet = tableau.extensions.worksheetContent.worksheet;
 
-    if (!worksheet) {
-        console.error("Worksheet not found:", worksheetName);
-        return;
-    }
+    if (!worksheet) return;
 
     worksheet.getSummaryDataAsync().then(dataTable => {
         const dimIndex = dataTable.columns.findIndex(c => c.fieldName === dimensionName);
         const mesIndex = dataTable.columns.findIndex(c => c.fieldName === measureName);
 
         if (dimIndex < 0 || mesIndex < 0) {
-            console.error("Dimension or Measure not found in the worksheet data.");
+            console.warn("Dimension or measure not found in summary data. Make sure they are added to the Marks card.");
             return;
         }
 
@@ -105,18 +108,18 @@ function fetchDataAndRenderChart(worksheetName, dimensionName, measureName) {
             totalValue += mesValue;
         });
 
-        // Format total value (e.g., 49,620)
         document.getElementById('total-value').innerText = totalValue.toLocaleString();
 
         const labels = Object.keys(dataMap);
         const values = Object.values(dataMap);
 
         renderChart(labels, values, totalValue);
+    }).catch(err => {
+        console.error("Error fetching data:", err);
     });
 }
 
 function renderDummyData() {
-    // Setup dummy data to match reference image when not configured
     document.getElementById('total-value').innerText = "49,620";
     renderChart(["Spenders", "Prospects", "Prosp. spnd"], [29275, 13893, 6452], 49620);
 }
@@ -124,11 +127,8 @@ function renderDummyData() {
 function renderChart(labels, values, total) {
     const ctx = document.getElementById('pieChart').getContext('2d');
     
-    if (pieChartInstance) {
-        pieChartInstance.destroy();
-    }
+    if (pieChartInstance) pieChartInstance.destroy();
 
-    // Draw the chart
     pieChartInstance = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -144,19 +144,13 @@ function renderChart(labels, values, total) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    display: false // Hide default legend to use custom one
-                },
+                legend: { display: false },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
                             let label = context.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed !== null) {
-                                label += context.parsed.toLocaleString();
-                            }
+                            if (label) label += ': ';
+                            if (context.parsed !== null) label += context.parsed.toLocaleString();
                             return label;
                         }
                     }
@@ -170,7 +164,7 @@ function renderChart(labels, values, total) {
 
 function renderCustomLegend(labels, values, total) {
     const legendContainer = document.getElementById('chart-legend');
-    legendContainer.innerHTML = ''; // clear existing
+    legendContainer.innerHTML = ''; 
 
     labels.forEach((label, index) => {
         const val = values[index];
