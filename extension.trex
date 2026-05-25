@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest manifest-version="0.1" xmlns="http://www.tableau.com/xml/extension_manifest">
-  <viz-extension id="com.example.piechartextension" extension-version="1.0.0">
+  <worksheet-extension id="com.example.piechartextension" extension-version="1.0.0">
     <default-locale>en_US</default-locale>
     <name resource-id="name"/>
     <description>Custom Pie Chart Extension</description>
@@ -16,7 +16,7 @@
     <context-menu>
       <configure-context-menu-item />
     </context-menu>
-  </viz-extension>
+  </worksheet-extension>
   <resources>
     <resource id="name">
       <text locale="en_US">Custom Pie Chart Extension</text>
